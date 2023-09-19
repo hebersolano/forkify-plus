@@ -170,3 +170,19 @@ const init = function () {
 };
 init();
 console.log(model.state);
+
+const newFeature = function () {
+  console.log('Welcome to the application');
+};
+
+/* git init
+git add -A
+commit -m 'Initial commit'
+git reset --hard HEAD
+git log
+git reset --hard cab71e90a960(id commit)
+git branch
+q - close
+git branch new-feature
+git checkout new-feature
+*/
