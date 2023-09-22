@@ -181,4 +181,5 @@ git branch
 q - close
 git branch new-feature
 git checkout new-feature
+git merge new-feature
 */
