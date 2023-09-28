@@ -55,20 +55,21 @@ const controlSearchResults = async function () {
 
     // 1) Get search query
     const query = searchView.getQuery();
-    //if (!query) return;
+    if (!query) return;
 
     // 2) Load search results
-    // await model.loadSearchResults(query);
+    await model.loadSearchResults(query);
 
     //3) Render results
-    // resultsView.render(await model.getSearchResultsPage(1));
-    resultsView.render(model.state.search.results);
+    resultsView.render(await model.getSearchResultsPage(1));
+    // resultsView.render(model.state.search.results);
 
     // 4) Render initial pagination buttons
     paginationView.render(model.state.search);
 
     // 5) Render sorting buttons and send data to sort
-    sortViews.render(model.state.search.results);
+    sortViews.render(model.state.search.resultsPage);
+    // sortViews.render(model.state.search.results);
   } catch (err) {
     console.log(err);
   }
@@ -166,7 +167,7 @@ const init = function () {
   sortViews.addHandlerSort(controlSortSearchResults);
 };
 init();
-console.log(model.state);
+console.log('Model state:', model.state);
 
 /* git init
 git add -A

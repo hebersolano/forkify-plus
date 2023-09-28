@@ -9,37 +9,45 @@ class SortViews extends View {
     return `
       <button class="btn-sort btn--sortByIng">
         <span>Sort by Ingredient </span>
-        <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+        <svg class="sort-icon hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
         </svg>
       </button>
 
       <button class="btn-sort btn--sortByDur">
         <span>Sort by Duration</span>
-        <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+        <svg class="sort-icon hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
         </svg>
       </button>
     `;
   }
 
   addHandlerSort(handler) {
-    const callback = function (e) {
+    let sortIcon = document.querySelector('.icon-sort');
+
+    const listenerFunc = function (e) {
       e.preventDefault();
       const sortBtn = e.target.closest('.btn-sort');
       if (!sortBtn) return;
+
+      sortBtn.childNodes[3].classList.remove('hidden'); // hide sort-icon
       let typeSort = sortBtn.classList.contains('desc') ? 'desc' : 'asc';
 
       if (sortBtn.classList.contains('btn--sortByIng')) {
-        handler(this._sortBy('numIngredients', typeSort));
+        handler(this._sortBy('numIngredients', typeSort)); // sort by ingredients
+        sortBtn.classList.add('sort-active'); // apply styles to active button
+        sortBtn.nextElementSibling.classList.remove('sort-active');
       } else if (sortBtn.classList.contains('btn--sortByDur')) {
-        handler(this._sortBy('cookingTime', typeSort));
+        handler(this._sortBy('cookingTime', typeSort)); // sort by cooking time
+        sortBtn.classList.add('sort-active');
+        sortBtn.previousElementSibling.classList.remove('sort-active');
       }
 
       sortBtn.classList.toggle('desc');
     };
 
-    this._parentElement.addEventListener('click', callback.bind(this));
+    this._parentElement.addEventListener('click', listenerFunc.bind(this)); // bind "this" because "handler" is not found in the scope (_parentElement's scope). Try without it to test
   }
 
   _sortBy(type, order) {

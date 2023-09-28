@@ -144,14 +144,22 @@
 }
 
 .sort-icon {
-  width: 12px;
-  height: 12px;
-  stroke: black;
+  width: 24px;
+  height: 24px;
+  stroke: $color-grey-light-1;
+  transform: rotate(360deg);
 }
 
 .btn-sort.desc .sort-icon {
-  stroke: red;
   transform: rotate(180deg);
+}
+
+.btn-sort.sort-active {
+  color: $color-grey-light-1;
+  background-color: $color-primary;
+}
+.btn-sort.sort-active .sort-icon {
+  stroke: $color-grey-light-1;
 }
 
 .btn--round {

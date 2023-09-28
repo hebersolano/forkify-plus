@@ -18,7 +18,6 @@ export const state = {
 };
 
 const createRecipeObject = function (data) {
-  console.log(data);
   const { recipe } = data.data;
   return {
     id: recipe.id,
@@ -56,14 +55,6 @@ export const loadSearchResults = async function (query) {
   try {
     state.search.query = query;
     const data = await AJAX(`${API_URL}?search=${query}&key=${KEY}`);
-
-    // state.search.results = await Promise.all(
-    //   data.data.recipes.map(rec => createResultsObj(rec))
-    // );
-    // for (const rec of data.data.recipes) {
-    //   const result = await createResultsObj(rec);
-    //   state.search.results.push(result);
-    // }
 
     state.search.results = data.data.recipes.map(function (rec) {
       return {
@@ -110,21 +101,26 @@ export const getSearchResultsPage = async function (page = state.search.page) {
   const results = await Promise.all(newResults);
   console.log('Search results per page:', results);
   state.search.resultsPage = results;
-  persistResults();
+  // persistResults();
   return results;
 };
 
-const persistResults = function () {
-  localStorage.setItem(
-    'results-page',
-    JSON.stringify(state.search.resultsPage)
-  );
-};
+/* FUNCTION TO STORE PAGE RESULTS AND TEST without making server request so often
+Model: called in getSearchResultsPage function and init function
+Controller: in controlSearchResults switch lines of code with commented code in sections 3 and 5 and comment "if (!query) return;"
+*/
 
-const getStoredResults = function () {
-  const storage = localStorage.getItem('results-page');
-  if (storage) state.search.results = JSON.parse(storage);
-};
+// const persistResults = function () {
+//   localStorage.setItem(
+//     'results-page',
+//     JSON.stringify(state.search.resultsPage)
+//   );
+// };
+
+// const getStoredResults = function () {
+//   const storage = localStorage.getItem('results-page');
+//   if (storage) state.search.results = JSON.parse(storage);
+// };
 
 export const updateServings = function (newServings) {
   state.recipe.ingredients.forEach(ing => {
@@ -161,7 +157,7 @@ export const deleteBookmark = function (id) {
 };
 
 const init = function () {
-  getStoredResults();
+  // getStoredResults();
   const storage = localStorage.getItem('bookmarks');
   if (storage) state.bookmarks = JSON.parse(storage);
 };
