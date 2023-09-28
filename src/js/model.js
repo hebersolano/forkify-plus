@@ -1,13 +1,16 @@
+import { async } from 'regenerator-runtime';
 import { API_URL, RES_PER_PAGE, KEY } from './config.js';
 // import { getJSON } from './helpers.js';
 // import { sendJSON } from './helpers.js';
 import { AJAX } from './helpers.js';
+import { asinh } from 'core-js/./es/number';
 
 export const state = {
   recipe: {},
   search: {
     query: '',
     results: [],
+    resultsPage: [],
     page: 1,
     resultsPerPage: RES_PER_PAGE,
   },
@@ -54,7 +57,15 @@ export const loadSearchResults = async function (query) {
     state.search.query = query;
     const data = await AJAX(`${API_URL}?search=${query}&key=${KEY}`);
 
-    state.search.results = data.data.recipes.map(rec => {
+    // state.search.results = await Promise.all(
+    //   data.data.recipes.map(rec => createResultsObj(rec))
+    // );
+    // for (const rec of data.data.recipes) {
+    //   const result = await createResultsObj(rec);
+    //   state.search.results.push(result);
+    // }
+
+    state.search.results = data.data.recipes.map(function (rec) {
       return {
         id: rec.id,
         title: rec.title,
@@ -64,6 +75,7 @@ export const loadSearchResults = async function (query) {
       };
     });
     state.search.page = 1;
+    console.log('All search results', state.search.results);
     // console.log(data);
     // console.log(query);
   } catch (err) {
@@ -72,13 +84,46 @@ export const loadSearchResults = async function (query) {
   }
 };
 
-export const getSearchResultsPage = function (page = state.search.page) {
+export const getSearchResultsPage = async function (page = state.search.page) {
   state.search.page = page;
 
   const start = (page - 1) * state.search.resultsPerPage; // 0
   const end = page * state.search.resultsPerPage; // 9
 
-  return state.search.results.slice(start, end);
+  const newResults = state.search.results
+    .slice(start, end)
+    .map(async function (rec) {
+      try {
+        const data = await AJAX(`${API_URL}/${rec.id}?key=${KEY}`);
+        const { recipe } = data.data;
+
+        rec.cookingTime = recipe.cooking_time;
+        rec.numIngredients = recipe.ingredients.length;
+
+        return rec;
+      } catch (err) {
+        console.error(`${err} 💥💥💢💢`);
+        throw err;
+      }
+    });
+
+  const results = await Promise.all(newResults);
+  console.log('Search results per page:', results);
+  state.search.resultsPage = results;
+  persistResults();
+  return results;
+};
+
+const persistResults = function () {
+  localStorage.setItem(
+    'results-page',
+    JSON.stringify(state.search.resultsPage)
+  );
+};
+
+const getStoredResults = function () {
+  const storage = localStorage.getItem('results-page');
+  if (storage) state.search.results = JSON.parse(storage);
 };
 
 export const updateServings = function (newServings) {
@@ -116,11 +161,12 @@ export const deleteBookmark = function (id) {
 };
 
 const init = function () {
+  getStoredResults();
   const storage = localStorage.getItem('bookmarks');
   if (storage) state.bookmarks = JSON.parse(storage);
 };
 init();
-console.log(state.bookmarks);
+console.log(state.bookmarks, state.search.results);
 
 const clearBookmarks = function () {
   localStorage.clear('bookmarks');

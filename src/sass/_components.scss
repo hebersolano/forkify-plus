@@ -113,36 +113,7 @@
   transition: all 0.2s;
 }
 
-.btn--sortbying {
-  color: $color-primary;
-  font-size: 1.3rem;
-  width: 22rem;
-  font-weight: 600;
-  border: none;
-  background-color: $color-grey-light-1;
-  padding: 0.8rem 1.2rem;
-  border-radius: 10rem;
-  cursor: pointer;
-
-  display: flex;
-  align-items: left;
-  transition: all 0.2s;
-
-  span {
-    margin: 0 0.4rem;
-  }
-
-  &:hover {
-    color: $color-grad-2;
-    background-color: $color-grey-light-2;
-  }
-
-  &:focus {
-    outline: none;
-  }
-}
-
-.btn--sortbydur {
+.btn-sort {
   color: $color-primary;
   font-size: 1.3rem;
   width: 22rem;

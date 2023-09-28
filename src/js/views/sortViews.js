@@ -2,41 +2,47 @@ import View from './view';
 import previewView from './previewView';
 
 class SortViews extends View {
-  _parentEl = document.querySelector('.results');
+  _parentElement = document.querySelector('.resultsBtns');
+  _errorMessage = 'error rendering buttons';
 
-  generateSortingButtons() {
-    return `  <button class="btn--sortbying">
-            <span>Sort by number of ingredient </span>
-          </button>
-          <button class="btn--sortbydur">
-            <span>Sort by prepairing duration</span>
-          </button> `;
+  _generateMarkup(result) {
+    return `
+      <button class="btn-sort btn--sortByIng">
+        <span>Sort by Ingredient </span>
+      </button>
+      <button class="btn-sort btn--sortByDur">
+        <span>Sort by Duration</span>
+      </button>
+    `;
   }
 
-  addHandlerSortByIng(handler) {
-    this._parentEl.addEventListener('click', function (e) {
-      const sortBtn = e.target.closest('.btn--sortbying');
+  addHandlerSort(handler) {
+    const callback = function (e) {
+      e.preventDefault();
+      const sortBtn = e.target.closest('.btn-sort');
       if (!sortBtn) return;
 
-      e.preventDefault();
+      console.log(sortBtn);
+      if (sortBtn.classList.contains('btn--sortByIng')) {
+        handler(this._sortByIng());
+      } else if (sortBtn.classList.contains('btn--sortByDur')) {
+        handler(this._sortByDur());
+      }
+    };
 
-      let data = this._data.slice();
-      data.sort((a, b) => a.numIng - b.numIng);
-      handler(data);
-    });
+    this._parentElement.addEventListener('click', callback.bind(this));
   }
 
-  addHandlerSortByDuration(handler) {
-    this._parentEl.addEventListener('click', function (e) {
-      const sortBtn = e.target.closest('.btn--sortbydur');
-      if (!sortBtn) return;
+  _sortByIng() {
+    let data = this._data;
+    data.sort((a, b) => a.numIngredients - b.numIngredients);
+    return data;
+  }
 
-      e.preventDefault();
-
-      let data = this._data.slice();
-      data.sort((a, b) => a.cookingTime - b.cookingTime);
-      handler(data);
-    });
+  _sortByDur() {
+    let data = this._data;
+    data.sort((a, b) => a.cookingTime - b.cookingTime);
+    return data;
   }
 }
 

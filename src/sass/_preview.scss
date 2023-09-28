@@ -57,7 +57,7 @@
   &__data {
     display: grid;
     width: 100%;
-    grid-template-columns: 1fr 2rem;
+    grid-template-columns: 1fr 1fr;
     row-gap: 0.1rem;
     align-items: center;
   }
@@ -81,6 +81,11 @@
     color: $color-grey-dark-2;
     text-transform: uppercase;
     font-weight: 600;
+  }
+
+  &__info {
+    color: #615551;
+    text-transform: uppercase;
   }
 
   &__user-generated {

@@ -1,5 +1,5 @@
 .search-results {
-  padding: 3rem 0;
+  padding: 1rem 0;
   display: flex;
   flex-direction: column;
 }
@@ -45,4 +45,16 @@
   .twitter-link:visited {
     color: $color-grey-dark-2;
   }
+}
+
+.resultsBtns {
+  padding: 1.5rem 3.25rem;
+  margin: 4px 0 8px;
+  display: flex;
+  justify-content: space-around;
+  gap: 8px;
+}
+
+.btn-sort {
+  width: auto;
 }

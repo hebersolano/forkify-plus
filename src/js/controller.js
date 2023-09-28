@@ -13,6 +13,7 @@ const searchResults = document.querySelector('.results');
 // import icons from '../img/icons.svg'; -parcel 1
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
+import { async } from 'regenerator-runtime';
 
 if (module.hot) {
   module.hot.accept();
@@ -27,7 +28,7 @@ const controlRecipes = async function () {
     recipeView.renderSpinner();
 
     // 0) Update results view to mark selected search result
-    resultsView.update(model.getSearchResultsPage());
+    resultsView.update(await model.getSearchResultsPage());
 
     // 1) Updating bookmarks view
     bookmarksView.update(model.state.bookmarks);
@@ -54,41 +55,39 @@ const controlSearchResults = async function () {
 
     // 1) Get search query
     const query = searchView.getQuery();
-    if (!query) return;
+    //if (!query) return;
 
     // 2) Load search results
-    await model.loadSearchResults(query);
+    //await model.loadSearchResults(query);
 
     //3) Render results
     // resultsView.render(model.state.search.results);
-    resultsView.render(model.getSearchResultsPage(1));
+    //resultsView.render(await model.getSearchResultsPage(1));
+    resultsView.render(model.state.search.results);
 
     // 4) Render initial pagination buttons
     paginationView.render(model.state.search);
 
-    // 5) Render sorting buttons
-    searchResults.insertAdjacentHTML(
-      'beforebegin',
-      sortViews.generateSortingButtons()
-    );
+    // 5) Render sorting buttons and send data to sort
+    sortViews.render(model.state.search.results);
   } catch (err) {
     console.log(err);
   }
 };
 
-const controlSortSearchResults = function () {
+const controlSortSearchResults = function (data) {
   try {
     //1) Render NEW results
-    if (sortViews.addHandlerSortByIng() || sortViews.addHandlerSortByDuration())
-      resultsView.render(sortViews.addHandlerSortByIng());
+    resultsView.render(data);
   } catch (err) {
     console.log(err);
   }
 };
 
-const controlPagination = function (goToPage) {
+const controlPagination = async function (goToPage) {
   //1) Render NEW results
-  resultsView.render(model.getSearchResultsPage(goToPage));
+  resultsView.render(await model.getSearchResultsPage(goToPage));
+  sortViews.render(model.state.search.resultsPage, false); // actualize data in sortView but doesn't render buttons again
 
   // 2) Render NEW pagination buttons
   paginationView.render(model.state.search);
@@ -165,8 +164,7 @@ const init = function () {
   searchView.addHandlerSearch(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
   addRecipeView.addHandlerUpload(controlAddRecipe);
-  sortViews.addHandlerSortByIng(sortViews.update);
-  sortViews.addHandlerSortByDuration(sortViews.render);
+  sortViews.addHandlerSort(controlSortSearchResults);
 };
 init();
 console.log(model.state);
