@@ -125,7 +125,8 @@
   cursor: pointer;
 
   display: flex;
-  align-items: left;
+  align-items: center;
+  align-content: center;
   transition: all 0.2s;
 
   span {
@@ -140,6 +141,17 @@
   &:focus {
     outline: none;
   }
+}
+
+.sort-icon {
+  width: 12px;
+  height: 12px;
+  stroke: black;
+}
+
+.btn-sort.desc .sort-icon {
+  stroke: red;
+  transform: rotate(180deg);
 }
 
 .btn--round {
